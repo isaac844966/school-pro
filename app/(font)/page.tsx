@@ -8,6 +8,7 @@ function Home() {
   return (
     <div>
       <HeroSection />
+
       <LogoCloud />
       <DashboardPreveiw />
       <FeaturesGrid />
