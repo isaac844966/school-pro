@@ -3,6 +3,7 @@ import HeroSection from "@/components/frontend/HeroSection";
 import LogoCloud from "@/components/frontend/LogoCloud";
 import FeaturesGrid from "@/components/frontend/FeaturesGrid";
 import Pricing from "@/components/frontend/Pricing";
+import TabFeatures from "@/components/frontend/TabFeatures";
 
 function Home() {
   return (
@@ -11,6 +12,7 @@ function Home() {
       <LogoCloud />
       <DashboardPreveiw />
       <FeaturesGrid />
+      <TabFeatures />
       <Pricing />
     </div>
   );

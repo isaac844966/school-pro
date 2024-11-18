@@ -1,4 +1,10 @@
+import Login from "@/components/frontend/auth/Login";
+
 function page() {
-  return <div>page</div>;
+  return (
+    <div>
+      <Login />
+    </div>
+  );
 }
 export default page;
