@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { cn } from "@/lib/utils";
 import React, { useState } from "react";
@@ -8,7 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import { CircleHelp, Eye, EyeOff, Mail } from "lucide-react";
+import { CircleHelp, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 type TextInputProps = {
   register: any;

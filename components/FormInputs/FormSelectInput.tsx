@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import AddNewButton from "@/components/FormInputs/AddNewButton";
-import React, { useState } from "react";
+
 import Select from "react-tailwindcss-select";
 import { Option, Options } from "react-tailwindcss-select/dist/components/type";
 type FormSelectInputProps = {
