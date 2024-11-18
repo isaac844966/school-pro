@@ -17,14 +17,16 @@ export type RegisterInputProps = {
   phone: string;
 };
 export default function Login() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
   const {
     register,
     handleSubmit,
-    reset,
+    // reset,
     formState: { errors },
   } = useForm<RegisterInputProps>();
   const router = useRouter();
+  console.log(router);
+
   async function onSubmit(data: RegisterInputProps) {
     console.log(data);
   }
