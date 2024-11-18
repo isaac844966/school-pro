@@ -284,29 +284,23 @@ export default function SiteHeader() {
               <Link
                 href="/pricing"
                 className="px-4 py-2 text-lg font-medium hover:bg-accent"
-                onClick={() => setOpen(false)}
               >
                 Pricing
               </Link>
               <Link
                 href="/how-it-works"
                 className="px-4 py-2 text-lg font-medium hover:bg-accent"
-                onClick={() => setOpen(false)}
               >
                 How it works
               </Link>
             </div>
             <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-background">
               <div className="grid gap-2">
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => setOpen(false)}
-                >
-                  Log in
+                <Button variant="outline" className="w-full" asChild>
+                  <Link href="/login">Log in</Link>
                 </Button>
-                <Button className="w-full" onClick={() => setOpen(false)}>
-                  Sign up
+                <Button className="w-full" asChild>
+                  <Link href="/contact-us">Book Demo</Link>
                 </Button>
               </div>
             </div>
