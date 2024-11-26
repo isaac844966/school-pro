@@ -12,6 +12,7 @@ type FormSelectInputProps = {
   href?: string;
   labelShown?: boolean;
   toolTipText?: string;
+  isSearchable?: boolean;
 };
 export default function FormSelectInput({
   options,
@@ -21,6 +22,7 @@ export default function FormSelectInput({
   href,
   toolTipText,
   labelShown = true,
+  isSearchable = true,
 }: FormSelectInputProps) {
   return (
     <div className="">
@@ -31,7 +33,7 @@ export default function FormSelectInput({
       )}
       <div className="flex items-center space-x-2">
         <Select
-          isSearchable
+          isSearchable={isSearchable}
           primaryColor="blue"
           value={option}
           onChange={(item) => setOption(item)}

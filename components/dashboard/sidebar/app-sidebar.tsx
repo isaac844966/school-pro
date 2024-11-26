@@ -23,6 +23,7 @@ import {
   Settings2,
   Sparkles,
   SquareTerminal,
+  User,
 } from "lucide-react";
 import {
   Collapsible,
@@ -51,29 +52,37 @@ export default function AppSidebar() {
   const sidebarLinks = [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: SquareTerminal,
       isActive: true,
       items: [{ title: "Overview", url: "#" }],
     },
     {
       title: "Student Management",
-      url: "#",
+      url: "/dashboard/students",
       icon: Bot,
       items: [
-        { title: "Student Directory", url: "#" },
-        { title: "Enrollment", url: "#" },
-        { title: "Attendance", url: "#" },
-        { title: "Performance", url: "#" },
+        { title: "Student Directory", url: "/dashboard/students" },
+        { title: "Fees", url: "/dashboard/students/fees" },
+        { title: "Students Ids", url: "/dashboard/students/ids" },
+        { title: "Attendance", url: "/dashboard/students/attendance" },
+      ],
+    },
+    {
+      title: "Users",
+      url: "/dashboard/users",
+      icon: User,
+      items: [
+        { title: "Parent", url: "/dashboard/users/parents" },
+        { title: "Secretary", url: "/dashboard/users/secretary" },
       ],
     },
     {
       title: "Academics",
-      url: "#",
+      url: "/dashboard/academics",
       icon: BookOpen,
       items: [
-        { title: "Curriculum", url: "#" },
-        { title: "Timetable", url: "#" },
+        { title: "Classes and Streams", url: "/dashboard/academics/classes" },
         { title: "Examinations", url: "#" },
         { title: "Assignments", url: "#" },
         { title: "Report Cards", url: "#" },
