@@ -99,13 +99,13 @@ export default function ClassManagement() {
         <h2 className="text-xl font-semibold">Classes</h2>
         <ClassForm userId="user123" />
       </div>
-      <div className="mb-4">
+      <div className="mb-4 relative">
         <Input
           type="search"
           placeholder="Search classes..."
-          className="w-full"
-          icon={<Search className="h-4 w-4" />}
+          className="w-full pl-10"
         />
+        <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
       </div>
       <div className="space-y-2">
         {classes.map((classItem) => (
