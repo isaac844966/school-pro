@@ -6,18 +6,11 @@ import SubmitButton from "../FormInputs/SubmitButton";
 import { Send } from "lucide-react";
 import TextArea from "../FormInputs/TextAreaInput";
 import FormSelectInput from "../FormInputs/FormSelectInput";
-export type ContactProps = {
-  fullName: string;
-  email: string;
-  school: string;
-  country: string;
-  schoolPage: string;
-  phone: string;
-  students: number;
-  role: string;
-  media: string;
-  message: string;
-};
+import { createSchool } from "@/actions/schools";
+import toast from "react-hot-toast";
+import { ContactProps } from "@/app/types/types";
+import { createContact } from "@/actions/admin";
+
 const ContactUs: React.FC = () => {
   const media = [
     { label: "Google", value: "google" },
@@ -26,16 +19,6 @@ const ContactUs: React.FC = () => {
 
     { label: "Other", value: "other" },
   ];
-  const [isLoading] = useState(false);
-  const [seletedRole, setSelectedRole] = useState<any>(null);
-  const [seletedMedia, setSelectedMedia] = useState<any>(media[0]);
-  const {
-    register,
-    handleSubmit,
-    // reset,
-    formState: { errors },
-  } = useForm<ContactProps>();
-
   const roles = [
     { label: "Pricipal/Leadership/Mgt", value: "Pricipal" },
     { label: "School Administrator", value: "Administrator" },
@@ -44,9 +27,33 @@ const ContactUs: React.FC = () => {
     { label: "Consultant/Reseller", value: "consultant/reseller" },
     { label: "Other", value: "other" },
   ];
+  const [loading, setLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<any>(roles[0]);
+  const [seletedMedia, setSelectedMedia] = useState<any>(media[0]);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ContactProps>();
 
   async function onSubmit(data: ContactProps) {
+    data.role = selectedRole.value;
+    data.media = seletedMedia.value;
+    data.students = Number(data.students);
     console.log(data);
+
+    try {
+      console.log(data);
+      setLoading(true);
+      const res = await createContact(data);
+      console.log(res);
+      toast.success("Request Successfully Submitted!");
+      setLoading(false);
+      reset();
+    } catch (error) {
+      setLoading(false);
+    }
   }
 
   return (
@@ -58,14 +65,14 @@ const ContactUs: React.FC = () => {
               Tell us about your institution and requirements
             </h3>
             <p className="text-muted-foreground text-sm text-center px-4 py-2 mb-4 max-w-xl mx-auto">
-              Our team will reach out within 24 hours to schedulea personalized
+              Our team will reach out within 24 hours to schedule a personalized
               demo and discuss your specific needs.
             </p>
             <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)}>
               <TextInput
                 label="Your Full Name"
                 register={register}
-                name="name"
+                name="fullName"
                 errors={errors}
                 placeholder="John Doe"
               />
@@ -123,7 +130,7 @@ const ContactUs: React.FC = () => {
                 <FormSelectInput
                   label="Your Role"
                   options={roles}
-                  option={seletedRole}
+                  option={selectedRole}
                   setOption={setSelectedRole}
                 />
                 <FormSelectInput
@@ -136,14 +143,14 @@ const ContactUs: React.FC = () => {
               <TextArea
                 label="Please share with us the key points you want to solve"
                 register={register}
-                name="features"
+                name="message"
                 errors={errors}
               />
 
               <SubmitButton
                 buttonIcon={Send}
                 title="Submiit"
-                loading={isLoading}
+                loading={loading}
                 loadingTitle="Sending please wait..."
               />
             </form>

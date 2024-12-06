@@ -14,52 +14,64 @@ import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import TextInput from "@/components/FormInputs/TextInput";
 import SubmitButton from "@/components/FormInputs/SubmitButton";
-
-export type StreamProps = {
-  name: string;
-};
+import { StreamCreateProps, Stream } from "@/app/types/types";
+import { createStream } from "@/actions/classes";
 
 export default function StreamForm({
-  userId,
+  classId,
   initialContent,
   editingId,
+  onStreamCreated,
 }: {
-  userId: string;
+  classId: string;
   initialContent?: string;
   editingId?: string;
+  onStreamCreated?: (newStream: Stream) => void;
 }) {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<StreamProps>({
+    reset,
+  } = useForm<StreamCreateProps>({
     defaultValues: {
-      name: initialContent || "",
+      title: initialContent || "",
+      classId: classId,
     },
   });
 
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  async function saveStream(data: StreamProps) {
+  async function saveStream(data: StreamCreateProps) {
     try {
       setLoading(true);
       if (editingId) {
-        // await updateStreamById(editingId, data);
+        // const updatedStream = await updateStream(editingId, data);
         setLoading(false);
         toast.success("Updated Successfully!");
+        if (onStreamCreated) {
+          // onStreamCreated(updatedStream);
+        }
       } else {
-        // await createStream(data);
+        const newStream = await createStream(data);
         setLoading(false);
         toast.success("Successfully Created!");
+        reset();
+        setIsOpen(false);
+        if (onStreamCreated) {
+          onStreamCreated(newStream);
+        }
       }
     } catch (error) {
       setLoading(false);
       console.error(error);
+      toast.error("Failed to save stream. Please try again.");
     }
   }
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {editingId ? (
           <Button variant="ghost" size="icon" title="Edit Stream">
@@ -84,7 +96,7 @@ export default function StreamForm({
               register={register}
               errors={errors}
               label="Stream Name"
-              name="name"
+              name="title"
               icon={Check}
             />
             <SubmitButton

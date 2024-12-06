@@ -1,56 +1,28 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-
-// import { generateSlug } from "@/lib/generateSlug";
-// import toast from "react-hot-toast";
-// import { Category } from "@prisma/client";
-// import { CategoryProps } from "@/types/types";
-
-// import TextInput from "../FormInputs/TextInput";
-// import TextArea from "../FormInputs/TextAreaInput";
-// import ImageInput from "../FormInputs/ImageInput";
 import TextInput from "@/components/FormInputs/TextInput";
 import ImageInput from "@/components/FormInputs/ImageInput";
-import FormFooter from "../students/FormFooter";
+
 import { Send } from "lucide-react";
 import SubmitButton from "@/components/FormInputs/SubmitButton";
+import { createSchool } from "@/actions/schools";
+import toast from "react-hot-toast";
+import { SchoolProps } from "@/app/types/types";
 
-// import { createCategory, updateCategoryById } from "@/actions/categories";
+// export type SelectOptionProps = {
+//   label: string;
+//   value: string;
+// };
 
-export type SelectOptionProps = {
-  label: string;
-  value: string;
-};
-type SingleStudentFormProps = {
-  editingId?: string | undefined;
-  initialData?: any | undefined | null;
-};
-
-export type StudentProps = {
-  name: string;
-  email: string;
-  password: string;
-  imageUrl: string;
-};
 export default function SchoolOnboardingForm() {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<StudentProps>({
+  } = useForm<SchoolProps>({
     defaultValues: {
       name: "",
     },
@@ -61,25 +33,29 @@ export default function SchoolOnboardingForm() {
   const initialImage = "/images/logo.webp";
   const [imageUrl, setImageUrl] = useState(initialImage);
 
-  async function saveStudent(data: StudentProps) {
+  async function saveSchool(data: SchoolProps) {
     try {
       setLoading(true);
-      data.imageUrl = imageUrl;
-      console.log(data);
+      data.logo = imageUrl;
+      const res = await createSchool(data);
+      console.log(res);
+      toast.success("Succesfully Created!");
+      setLoading(false);
     } catch (error) {
       setLoading(false);
       console.log(error);
+      toast.error("Failed to create school!");
     }
   }
 
   return (
-    <form className="" onSubmit={handleSubmit(saveStudent)}>
+    <form className="" onSubmit={handleSubmit(saveSchool)}>
       <div className="text-center">
         <h2 className="scroll-m-20  pb-2 tsxt-2xl font-semibold tracking-tight lg:text-3xl">
           Welcome to School Base,
         </h2>
         <p className="leading-7 [&:not(:first-child)]:mt-6">
-          Complete your school's profile to get started with SchoolPro.
+          Complete your school's profile to get started with SchoolBase.
         </p>
       </div>
       <div className="grid grid-cols-12 gap-6 py-2">
@@ -97,7 +73,7 @@ export default function SchoolOnboardingForm() {
               <ImageInput
                 title="Customise your School Logo"
                 className="object-contain"
-                endpoint="schollLogo"
+                endpoint="schoolLogo"
                 setImageUrl={setImageUrl}
                 imageUrl={imageUrl}
                 size="sm"

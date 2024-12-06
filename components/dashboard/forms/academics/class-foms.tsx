@@ -14,52 +14,63 @@ import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import TextInput from "@/components/FormInputs/TextInput";
 import SubmitButton from "@/components/FormInputs/SubmitButton";
-
-export type ClassProps = {
-  name: string;
-};
+import { ClassCreateProps, Class } from "@/app/types/types";
+import { createClass } from "@/actions/classes";
 
 export default function ClassForm({
   userId,
   initialContent,
   editingId,
+  onClassCreated,
 }: {
   userId: string;
   initialContent?: string;
   editingId?: string;
+  onClassCreated?: (newClass: Class) => void;
 }) {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ClassProps>({
+    reset,
+  } = useForm<ClassCreateProps>({
     defaultValues: {
-      name: initialContent || "",
+      title: initialContent || "",
     },
   });
 
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  async function saveFolder(data: ClassProps) {
+  async function saveClass(data: ClassCreateProps) {
     try {
       setLoading(true);
       if (editingId) {
-        // await updateFolderById(editingId, data);
+        // const updatedClass = await updateClass(editingId, data);
         setLoading(false);
         toast.success("Updated Successfully!");
+        if (onClassCreated) {
+          // onClassCreated(updatedClass);
+        }
       } else {
-        // await createFolder(data);
+        const newClass = await createClass(data);
         setLoading(false);
         toast.success("Successfully Created!");
+        reset();
+        setIsOpen(false);
+        if (onClassCreated) {
+          onClassCreated(newClass);
+        }
       }
     } catch (error) {
       setLoading(false);
       console.error(error);
+      toast.error("Failed to save class. Please try again.");
     }
   }
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {editingId ? (
           <Button variant="ghost" size="icon" title="Edit Class">
@@ -77,13 +88,13 @@ export default function ClassForm({
             {editingId ? "Edit Class" : "Add New Class"}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(saveFolder)}>
+        <form onSubmit={handleSubmit(saveClass)}>
           <div className="space-y-4">
             <TextInput
               register={register}
               errors={errors}
               label="Class Name"
-              name="name"
+              name="title"
               icon={Check}
             />
             <SubmitButton

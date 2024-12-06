@@ -1,18 +1,25 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UploadButton } from "@/lib/uploadthing";
-import { cn } from "@/lib/utils";
-// import { UploadButton } from "@/lib/uploadthing";
 import Image from "next/image";
-import React from "react";
+import { UploadButton } from "@/lib/uploadthing";
+
+type FileRouterEndpoints =
+  | "categoryImage"
+  | "studentProfileImage"
+  | "parentProfileImage"
+  | "schoolLogo"
+  | "fileUploads"
+  | "mailAttachments";
+
 type ImageInputProps = {
   title: string;
   imageUrl: string;
-  setImageUrl: any;
-  endpoint: any;
+  setImageUrl: (url: string) => void;
+  endpoint: FileRouterEndpoints; // Restrict to valid endpoints
   className?: string;
   size?: "sm" | "lg";
 };
+
 export default function ImageInput({
   title,
   imageUrl,
@@ -21,6 +28,19 @@ export default function ImageInput({
   className,
   size = "lg",
 }: ImageInputProps) {
+  const [uploading, setUploading] = useState(false);
+
+  const handleUploadComplete = (res: any[]) => {
+    setUploading(false);
+    if (res && res.length > 0) {
+      setImageUrl(res[0].url); // Set the uploaded image URL
+    }
+  };
+
+  const handleUploadError = (error: Error) => {
+    setUploading(false);
+    console.error(`Upload error: ${error.message}`);
+  };
   if (size === "sm") {
     return (
       <Card className="overflow-hidden">
@@ -31,25 +51,24 @@ export default function ImageInput({
           <div className="grid gap-2">
             <Image
               alt={title}
-              className={cn("h-20 w-full rounded-md object-cover", className)}
-              height="500"
+              className={`h-20 w-60 mx-auto rounded-md object-cover ${className}`}
+              height={500}
               src={imageUrl}
-              width="500"
+              width={500}
             />
             <UploadButton
               className="col-span-full"
-              endpoint={endpoint}
+              endpoint={endpoint} // Use the typed endpoint here
               onClientUploadComplete={(res) => {
-                // Do something with the response
-                console.log("Files: ", res);
-
-                setImageUrl(res[0].url);
+                handleUploadComplete(res);
               }}
-              onUploadError={(error: Error) => {
-                // Do something with the error.
-                alert(`ERROR! ${error.message}`);
+              onUploadError={(error) => {
+                handleUploadError(error);
               }}
             />
+            {uploading && (
+              <p className="text-center text-gray-500">Uploading...</p>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -64,25 +83,24 @@ export default function ImageInput({
         <div className="grid gap-2">
           <Image
             alt={title}
-            className={cn("h-40 w-full rounded-md object-cover", className)}
-            height="500"
+            className={`h-40 w-full rounded-md object-cover ${className}`}
+            height={500}
             src={imageUrl}
-            width="500"
+            width={500}
           />
           <UploadButton
             className="col-span-full"
-            endpoint={endpoint}
+            endpoint={endpoint} // Use the typed endpoint here
             onClientUploadComplete={(res) => {
-              // Do something with the response
-              console.log("Files: ", res);
-
-              setImageUrl(res[0].url);
+              handleUploadComplete(res);
             }}
-            onUploadError={(error: Error) => {
-              // Do something with the error.
-              alert(`ERROR! ${error.message}`);
+            onUploadError={(error) => {
+              handleUploadError(error);
             }}
           />
+          {uploading && (
+            <p className="text-center text-gray-500">Uploading...</p>
+          )}
         </div>
       </CardContent>
     </Card>

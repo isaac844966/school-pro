@@ -19,6 +19,7 @@ import {
   Bot,
   ChevronsUpDown,
   CreditCard,
+  Key,
   LogOut,
   Settings2,
   Sparkles,
@@ -164,6 +165,12 @@ export default function AppSidebar() {
         { title: "System Settings", url: "#" },
         { title: "Backup & Security", url: "#" },
       ],
+    },
+    {
+      title: "Admin Only",
+      url: "/dashboard/admin",
+      icon: Key,
+      items: [{ title: "Contacts", url: "/dashboard/admin/contacts" }],
     },
   ];
   return (
