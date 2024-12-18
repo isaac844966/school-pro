@@ -1,3 +1,6 @@
+export default function CustomDataTable() {
+  return <div>CustomDataTable</div>;
+}
 // "use client";
 // import Image from "next/image";
 // import { MoreHorizontal } from "lucide-react";
