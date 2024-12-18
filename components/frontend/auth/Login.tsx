@@ -3,32 +3,47 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import CustomCarousel from "../CustomCarousel";
+// import CustomCarousel from "../CustomCarousel";
 import TextInput from "@/components/FormInputs/TextInput";
 import SubmitButton from "@/components/FormInputs/SubmitButton";
 import Logo from "@/components/Logo";
 import PasswordInput from "@/components/FormInputs/PasswordInput";
 import { Lock, LogIn, Mail } from "lucide-react";
+import { loginUser } from "@/actions/auth";
+import { useUserSession } from "@/store/auth";
+import { User } from "@/app/types/types";
 
-export type RegisterInputProps = {
-  fullName: string;
+export type LoginInputProps = {
   email: string;
   password: string;
-  phone: string;
 };
 export default function Login() {
-  const [isLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
     // reset,
     formState: { errors },
-  } = useForm<RegisterInputProps>();
+  } = useForm<LoginInputProps>();
+  const { setUser } = useUserSession();
   const router = useRouter();
-  console.log(router);
 
-  async function onSubmit(data: RegisterInputProps) {
-    console.log(data);
+  async function onSubmit(data: LoginInputProps) {
+    try {
+      setIsLoading(true);
+      console.log(data);
+      const sessionData = await loginUser(data);
+      setUser(sessionData?.user as User);
+      const role = sessionData?.user.role;
+      if (role === "SUPER_ADMIN") {
+        router.push("/school-onboarding");
+      } else {
+        router.push("/dashboard");
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
   }
   return (
     <div className="w-full lg:grid h-screen lg:min-h-[600px] lg:grid-cols-2 relative ">
@@ -72,7 +87,7 @@ export default function Login() {
         </div>
       </div>
       <div className="hidden bg-muted lg:block relative">
-        <CustomCarousel />
+        {/* <CustomCarousel /> */}
       </div>
     </div>
   );

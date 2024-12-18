@@ -8,6 +8,7 @@ import {
   Trash2,
   ChevronLeft,
   Menu,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +16,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 import StreamForm from "./forms/academics/stream-form";
-import { Class, Stream, StreamCreateProps } from "@/app/types/types";
+import { Class, Stream, StreamCreateProps, StreamWithCount } from "@/app/types/types";
 import ClassForm from "./forms/academics/class-foms";
 import { createStream, getAllClasses } from "@/actions/classes";
 
@@ -46,24 +47,25 @@ export default function ClassManagement({
   };
 
   const handleStreamCreated = (newStream: Stream) => {
-    // Update classes list
     setClasses((prevClasses) =>
       prevClasses.map((c) =>
         c.id === selectedClass?.id
           ? {
               ...c,
-              streams: [...(c.streams || []), newStream],
+              streams: [...(c.streams || []), newStream as StreamWithCount],
             }
           : c
       )
     );
 
-    // Update selected class
     setSelectedClass((prevClass) =>
       prevClass
         ? {
             ...prevClass,
-            streams: [...(prevClass.streams || []), newStream],
+            streams: [
+              ...(prevClass.streams || []),
+              newStream as StreamWithCount,
+            ],
           }
         : null
     );
@@ -74,7 +76,6 @@ export default function ClassManagement({
     setIsSidebarOpen(false);
   };
 
-  // Filter classes based on search term
   const filteredClasses = classes.filter((classItem) =>
     classItem.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -105,12 +106,19 @@ export default function ClassManagement({
             onClick={() => handleClassSelect(classItem)}
           >
             <div>
-              <div className="font-medium">{classItem.title}</div>
-              <div className="text-sm text-gray-500">
-                {classItem.streams?.length || 0} sections
+              <div className="flex gap-4 items-center">
+                <div className="font-medium">{classItem.title}</div>
+                <div className="text-sm text-gray-500">
+                  {classItem.streams?.length || 0} sections,{" "}
+                </div>
+              </div>
+
+              <div className="text-sm text-gray-500 flex items-center -ml-1 mt-1">
+                <User className="w-4 h-4" /> {classItem._count?.students || 0}{" "}
+                students
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center ">
               <ClassForm
                 userId="user123"
                 initialContent={classItem.title}
@@ -184,7 +192,7 @@ export default function ClassManagement({
                         <h3 className="text-lg font-semibold">
                           {stream?.title || "Untitled Stream"}
                         </h3>
-                        <div className="flex space-x-1">
+                        <div className="flex ">
                           <StreamForm
                             classId={selectedClass.id}
                             initialContent={stream?.title}
@@ -196,11 +204,9 @@ export default function ClassManagement({
                           </Button>
                         </div>
                       </div>
-                      <div className="text-sm text-gray-500">
-                        Created:{" "}
-                        {stream?.createdAt
-                          ? new Date(stream.createdAt).toLocaleDateString()
-                          : "Unknown"}
+                      <div className="text-sm text-gray-500 flex items-center gap-2 mb-2">
+                        <User className="w-4 h-4" />{" "}
+                        {stream?._count?.students || 0} students
                       </div>
                       <div className="text-sm text-gray-500">
                         Updated:{" "}

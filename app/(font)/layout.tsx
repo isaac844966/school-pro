@@ -3,7 +3,7 @@ import SiteHeader from "@/components/SiteHeader";
 
 function FontLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
+    <div >
       <SiteHeader />
       {children}
       <SiteFooter />

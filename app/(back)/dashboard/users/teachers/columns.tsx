@@ -5,10 +5,11 @@ import Image from "next/image";
 import SortableColumn from "@/components/DataTableColumns/SortableColumn";
 import DateColumn from "@/components/DataTableColumns/DateColumn";
 import ActionColumn from "@/components/DataTableColumns/ActionColumn";
-import { StudentProps } from "@/app/types/types";
-import StudentCardInfo from "@/components/dashboard/models/student-info-card";
+import { ParentProps, Teacher } from "@/app/types/types";
+import ParentCardInfo from "@/components/dashboard/models/parent-info-card";
+import TeacherCardInfo from "@/components/dashboard/models/teacher-card-info";
 
-export const columns: ColumnDef<StudentProps>[] = [
+export const columns: ColumnDef<Teacher>[] = [
   {
     accessorKey: "image",
     header: "Image",
@@ -19,8 +20,8 @@ export const columns: ColumnDef<StudentProps>[] = [
           <Image
             src={imageUrl}
             alt={`${row.original.firstName} ${row.original.lastName}`}
-            width={40}
-            height={40}
+            width={50}
+            height={50}
             className="rounded-full object-cover"
           />
         </div>
@@ -40,33 +41,13 @@ export const columns: ColumnDef<StudentProps>[] = [
     header: ({ column }) => <SortableColumn column={column} title="Email" />,
   },
   {
-    id: "classAndStream",
-    header: ({ column }) => (
-      <SortableColumn column={column} title="Class & Stream" />
-    ),
-    cell: ({ row }) => {
-      const classTitle = row.original.classTitle;
-      const streamTitle = row.original.streamTitle;
-      return (
-        <div>
-          {classTitle ? (
-            <div>{classTitle}</div>
-          ) : (
-            <div className="text-gray-400">No class assigned</div>
-          )}
-          {streamTitle ? (
-            <div className="text-sm text-gray-600">{streamTitle}</div>
-          ) : (
-            <div className="text-sm text-gray-400">No stream assigned</div>
-          )}
-        </div>
-      );
-    },
+    accessorKey: "phone",
+    header: ({ column }) => <SortableColumn column={column} title="Phone" />,
   },
   {
     accessorKey: "view",
     header: "View",
-    cell: ({ row }) => <StudentCardInfo row={row.original} />,
+    cell: ({ row }) => <TeacherCardInfo row={row.original} />,
   },
   {
     accessorKey: "createdAt",
@@ -76,13 +57,13 @@ export const columns: ColumnDef<StudentProps>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const student = row.original;
+      const contact = row.original;
       return (
         <ActionColumn
           row={row}
-          model="student"
+          model="contact"
           editEndpoint={`#`}
-          id={student.id}
+          id={contact.id}
         />
       );
     },

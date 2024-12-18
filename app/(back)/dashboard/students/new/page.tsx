@@ -1,3 +1,6 @@
+import { getAllClasses } from "@/actions/classes";
+import { getAllParents } from "@/actions/parents";
+import { getStudentNextSequence } from "@/actions/students";
 import BulkStudentForm from "@/components/dashboard/forms/students/bulk-student-form";
 import SingleStudentForm from "@/components/dashboard/forms/students/student-forms";
 import InfoBanner from "@/components/info-banner";
@@ -5,7 +8,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserPlus, Users } from "lucide-react";
 
-function page() {
+async function page() {
+  const classes = (await getAllClasses()) || [];
+  const parents = (await getAllParents()) || [];
+  const nextSequence = (await getStudentNextSequence()) || 0;
   return (
     <div className="w-full mx-auto p-6 lg:px-20">
       <Tabs defaultValue="single" className="w-full">
@@ -32,7 +38,11 @@ function page() {
                 message="Please Make sure you have Already Created the Parent,Class and Stream for the Student"
                 type="warning"
               />
-              <SingleStudentForm />
+              <SingleStudentForm
+                classes={classes}
+                parents={parents}
+                nextSeq={nextSequence}
+              />
             </TabsContent>
             <TabsContent value="bulk" className="mt-6">
               <BulkStudentForm />

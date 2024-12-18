@@ -11,6 +11,12 @@ import ImageInput from "@/components/FormInputs/ImageInput";
 
 import PasswordInput from "@/components/FormInputs/PasswordInput";
 import FormSelectInput from "@/components/FormInputs/FormSelectInput";
+import { Class, ParentProps, StudentProps } from "@/app/types/types";
+import toast from "react-hot-toast";
+import { createStudent } from "@/actions/students";
+import RadioInput from "@/components/FormInputs/RadioInput";
+import { Label } from "recharts";
+import { generateRollNo } from "@/lib/generateRollNo";
 
 export type SelectOptionProps = {
   label: string;
@@ -19,36 +25,32 @@ export type SelectOptionProps = {
 type SingleStudentFormProps = {
   editingId?: string | undefined;
   initialData?: any | undefined | null;
+  classes: Class[];
+  parents: ParentProps[];
+  nextSeq: number;
 };
 
-export type StudentProps = {
-  name: string;
-  email: string;
-  password: string;
-  imageUrl: string;
-};
 export default function SingleStudentForm({
   editingId,
   initialData,
+  classes,
+  parents,
+  nextSeq,
 }: SingleStudentFormProps) {
-  const parents = [
+  const classesOptions = classes.map((parent) => {
+    return {
+      label: parent.title,
+      value: parent.id,
+    };
+  });
+  const genders = [
     {
-      label: "John Doe",
-      value: "234455",
+      label: "MALE",
+      value: "MALE",
     },
     {
-      label: "Allen Smith",
-      value: "2347755",
-    },
-  ];
-  const classes = [
-    {
-      label: "SS1",
-      value: "234455",
-    },
-    {
-      label: "SS2",
-      value: "2347755",
+      label: "FEMALE",
+      value: "FEMALE",
     },
   ];
   const religion = [
@@ -61,39 +63,41 @@ export default function SingleStudentForm({
       value: "Muslim",
     },
   ];
-  const genders = [
-    {
-      label: "MALE",
-      value: "MALE",
-    },
-    {
-      label: "FEMALE",
-      value: "FEMALE",
-    },
-  ];
-  const streams = [
-    {
-      label: "SS1A",
-      value: "234455",
-    },
-    {
-      label: "SS1B",
-      value: "234455",
-    },
-    {
-      label: "SS2A",
-      value: "2347755",
-    },
-    {
-      label: "SS2B",
-      value: "2347755",
-    },
-  ];
   const [selectedParent, setSelectedParent] = useState<any>(null);
   const [selectedClass, setSelectedClass] = useState<any>(null);
-  const [selectedStream, setSelectedStream] = useState<any>(null);
-  const [selectedGender, setSelectedGender] = useState<any>(null);
-  const [selectedReligion, setSelectedReligion] = useState<any>(null);
+  const [selectedStream, setSelectedStream] = useState<any>(
+    classesOptions[0] || null
+  );
+  const [selectedGender, setSelectedGender] = useState<any>(genders[0] || null);
+  const [selectedReligion, setSelectedReligion] = useState<any>(
+    religion[0] || null
+  );
+  const parentsOptions = parents.map((item) => {
+    return {
+      label: `${item.firstName} ${item.lastName}`,
+      value: item.id,
+    };
+  });
+  const studentTypes = [
+    {
+      label: "Private Student",
+      id: "PS",
+    },
+    {
+      label: "Sponsored Student",
+      id: "SS",
+    },
+  ];
+
+  const classId = selectedClass?.value || classesOptions[0]?.value || "";
+  const streams = classes.find((item) => item.id === classId)?.streams || [];
+  const streamsOptions = streams.map((item) => {
+    return {
+      label: item.title,
+      value: item.id,
+    };
+  });
+
   const {
     register,
     handleSubmit,
@@ -101,7 +105,8 @@ export default function SingleStudentForm({
     formState: { errors },
   } = useForm<StudentProps>({
     defaultValues: {
-      name: "",
+      firstName: "",
+      nationality:"Nigeria"
     },
   });
   const router = useRouter();
@@ -114,6 +119,16 @@ export default function SingleStudentForm({
     try {
       setLoading(true);
       data.imageUrl = imageUrl;
+      data.parentId = selectedParent?.value || "";
+      data.parentName = selectedParent?.label || "";
+      data.classId = selectedClass?.value || "";
+      data.classTitle = selectedClass?.label || "";
+      data.streamId = selectedStream?.value || "";
+      data.streamTitle = selectedStream?.label || "";
+      data.parentName = selectedParent?.label || "";
+      data.gender = selectedGender?.value || "";
+      data.religion = selectedReligion?.value || "";
+      data.fullName = `${data.firstName} ${data.lastName}`;
       console.log(data);
 
       if (editingId) {
@@ -124,12 +139,16 @@ export default function SingleStudentForm({
         // router.push("/dashboard/categories");
         // setImageUrl("/placeholder.svg");
       } else {
-        // await createCategory(data);
-        // setLoading(false);
-        // toast.success("Successfully Created!");
-        // reset();
-        // setImageUrl("/placeholder.svg");
-        // router.push("/dashboard/categories");
+        const studentType = data.studentType as "PS" | "SS";
+        const rollNo = generateRollNo("BU", studentType, nextSeq);
+        data.rollNo = rollNo;
+        const response = await createStudent(data);
+        console.log(response);
+        
+        setLoading(false);
+        toast.success("Student Successfully Created!");
+        reset();
+        router.push("/dashboard/students");
       }
     } catch (error) {
       setLoading(false);
@@ -174,7 +193,7 @@ export default function SingleStudentForm({
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
               <FormSelectInput
                 label="Parent"
-                options={parents}
+                options={parentsOptions}
                 option={selectedParent}
                 setOption={setSelectedParent}
                 toolTipText="Add New Parent"
@@ -182,7 +201,7 @@ export default function SingleStudentForm({
               />
               <FormSelectInput
                 label="Class"
-                options={classes}
+                options={classesOptions}
                 option={selectedClass}
                 setOption={setSelectedClass}
                 toolTipText="Add New Class"
@@ -190,7 +209,7 @@ export default function SingleStudentForm({
               />
               <FormSelectInput
                 label="Stream/Section"
-                options={streams}
+                options={streamsOptions}
                 option={selectedStream}
                 setOption={setSelectedStream}
                 toolTipText="Add New Stream/Section"
@@ -203,12 +222,12 @@ export default function SingleStudentForm({
                 errors={errors}
                 label="Phone"
                 name="phone"
-                type="tel"
+                type="phone"
               />
               <TextInput
                 label="Nationality"
                 register={register}
-                name="country"
+                name="nationality"
                 errors={errors}
                 placeholder="Nigeria"
               />
@@ -257,27 +276,36 @@ export default function SingleStudentForm({
                 name="dob"
                 type="date"
               />
-              <TextInput
+              {/* <TextInput
                 register={register}
                 errors={errors}
                 label="Roll No."
                 name="rollNo"
+              /> */}
+              <TextInput
+                register={register}
+                errors={errors}
+                label="Admission Number."
+                name="regNo"
               />
             </div>
             <div className="grid md:grid-cols-2  gap-3">
               <div className="">
                 <div className="grid gap-3">
-                  <TextInput
+                  <RadioInput
                     register={register}
+                    label="Student Type"
+                    name="studentType"
                     errors={errors}
-                    label="Admission Number."
-                    name="regNo"
+                    radioOptions={studentTypes}
+                    defaultValue={studentTypes[0].id}
                   />
                   <TextInput
                     register={register}
                     errors={errors}
                     label="Admission Date."
                     name="admissionDate"
+                    type="date"
                   />
                 </div>
                 <div className="grid gap-3">
@@ -308,7 +336,7 @@ export default function SingleStudentForm({
         editingId={editingId}
         loading={loading}
         title="Student"
-        parent=""
+        parent="users"
       />
     </form>
   );

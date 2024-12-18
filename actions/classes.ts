@@ -3,6 +3,7 @@
 import {
   Class,
   ClassCreateProps,
+  ClassList,
   Stream,
   StreamCreateProps,
 } from "@/app/types/types";
@@ -27,6 +28,7 @@ export async function createClass(data: ClassCreateProps) {
 
 export async function createStream(data: StreamCreateProps) {
   try {
+        console.log("Creating stream with data:", data);
     const response = await axiosInstance.post("/streams", data);
     if (response.data.error) {
       throw new Error(response.data.error);
@@ -44,6 +46,7 @@ export async function createStream(data: StreamCreateProps) {
 export async function deleteContact(id: string) {
   try {
     const response = await axiosInstance.delete(`/contacts/${id}`);
+     console.log(response);
     return response.data;
   } catch (error) {
     console.error("Error in deleteContact:", error);
@@ -54,10 +57,23 @@ export async function deleteContact(id: string) {
 export async function getAllClasses(): Promise<Class[]> {
   try {
     const response = await axiosInstance.get("/classes");
+   
     return response.data.map((classItem: any) => ({
       ...classItem,
       streams: classItem.streams || [],
     }));
+    
+  } catch (error) {
+    console.error("Error in getAllClasses:", error);
+    throw new Error("Failed to fetch classes");
+  }
+}
+export async function getAllClassList(): Promise<ClassList[]> {
+  try {
+    const response = await axiosInstance.get("/classes/list");
+    const classes = response.data
+    return classes as ClassList[]
+    
   } catch (error) {
     console.error("Error in getAllClasses:", error);
     throw new Error("Failed to fetch classes");

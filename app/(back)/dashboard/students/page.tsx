@@ -1,13 +1,23 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import React from "react";
+import TableHeader from "@/components/dashboard/Tables/TableHeader";
+import DataTable from "@/components/DataTableComponents/DataTable";
+import { getAllStudents } from "@/actions/students";
+import { columns } from "./columns";
 
-export default function page() {
+export default async function StudentsPage() {
+  const students = (await getAllStudents()) || [];
   return (
-    <div>
-      <h2>Students</h2>
-      <Button asChild>
-        <Link href="/dashboard/students/new">New Student</Link>
-      </Button>
+    <div className="p-8">
+      <TableHeader
+        title="Students"
+        linkTitle="Add Student"
+        href="/dashboard/students/new"
+        data={students}
+        model="student"
+      />
+      <div className="py-8">
+        <DataTable data={students} columns={columns} />
+      </div>
     </div>
   );
 }

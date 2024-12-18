@@ -46,12 +46,13 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
+
 export default function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = useState({});
-  const [columnVisibility, setColumnVisibility] = useState({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -59,7 +60,7 @@ export default function DataTable<TData, TValue>({
   const [filteredData, setFilteredData] = useState(data);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [isSearch, setIsSearch] = useState(true);
-  // console.log(isSearch);
+
   const table = useReactTable({
     data: isSearch ? searchResults : filteredData,
     columns,
@@ -81,18 +82,18 @@ export default function DataTable<TData, TValue>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
-  // console.log(searchResults);
+
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center gap-8">
-        <div className="flex-1 w-full">
+      <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-center md:space-y-0 md:space-x-4">
+        <div className="w-full md:w-1/2 lg:w-1/3">
           <SearchBar
             data={data}
             onSearch={setSearchResults}
             setIsSearch={setIsSearch}
           />
         </div>
-        <div className="flex items-center gap-2 ">
+        <div className="flex flex-wrap items-center gap-2">
           <DateRangeFilter
             data={data}
             onFilter={setFilteredData}
@@ -126,7 +127,7 @@ export default function DataTable<TData, TValue>({
         </div>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -154,7 +155,10 @@ export default function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      className="px-2 py-2 md:px-4 md:py-4"
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

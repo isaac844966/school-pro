@@ -8,6 +8,7 @@ type FileRouterEndpoints =
   | "studentProfileImage"
   | "parentProfileImage"
   | "schoolLogo"
+  | "teacherProfileImage"
   | "fileUploads"
   | "mailAttachments";
 
@@ -51,7 +52,7 @@ export default function ImageInput({
           <div className="grid gap-2">
             <Image
               alt={title}
-              className={`h-20 w-60 mx-auto rounded-md object-cover ${className}`}
+              className={`h-20 w-60 mx-auto rounded-md  ${className}`}
               height={500}
               src={imageUrl}
               width={500}
@@ -80,10 +81,10 @@ export default function ImageInput({
         <CardTitle className="text-center">{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-2">
+        <div className="grid gap-2 items-center justify-center">
           <Image
             alt={title}
-            className={`h-40 w-full rounded-md object-cover ${className}`}
+            className={`h-40 rounded-lg object-contain ${className}`}
             height={500}
             src={imageUrl}
             width={500}

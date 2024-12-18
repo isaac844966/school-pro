@@ -11,7 +11,7 @@ import SortableColumn from "@/components/DataTableColumns/SortableColumn";
 import { ColumnDef } from "@tanstack/react-table";
 import ActionColumn from "@/components/DataTableColumns/ActionColumn";
 import { ContactProps } from "@/app/types/types";
-import ContactCardInfo from "@/components/DataTableComponents/ContactCardInfo";
+import ContactCardInfo from "@/components/dashboard/models/ContactCardInfo";
 export const columns: ColumnDef<ContactProps>[] = [
   {
     accessorKey: "fullName",
@@ -21,17 +21,10 @@ export const columns: ColumnDef<ContactProps>[] = [
     accessorKey: "email",
     header: ({ column }) => <SortableColumn column={column} title="email" />,
   },
-  {
-    accessorKey: "school",
-    header: ({ column }) => <SortableColumn column={column} title="school" />,
-  },
+
   {
     accessorKey: "phone",
     header: ({ column }) => <SortableColumn column={column} title="phone" />,
-  },
-  {
-    accessorKey: "country",
-    header: ({ column }) => <SortableColumn column={column} title="country" />,
   },
 
   {

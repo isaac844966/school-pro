@@ -20,41 +20,36 @@ import PasswordInput from "@/components/FormInputs/PasswordInput";
 import FormSelectInput from "@/components/FormInputs/FormSelectInput";
 import FormHeader from "../students/FormHeader";
 import FormFooter from "../students/FormFooter";
-import { ParentProps } from "@/app/types/types";
+import { ParentProps, TeacherCreateProps } from "@/app/types/types";
 import { createParent } from "@/actions/parents";
+import { createTeacher } from "@/actions/teachers";
+import MultipleFormSelectInput from "@/components/FormInputs/MultipleFormSelectInput";
+import { convertToValidDateFormat, generateId } from "@/lib/utils";
 // import { createCategory, updateCategoryById } from "@/actions/categories";
 
-export type SelectOptionProps = {
+// export type SelectOptionProps = {
+//   label: string;
+//   value: string;
+// };
+export type DataOption = {
   label: string;
   value: string;
 };
-type SingleStudentFormProps = {
+type TeacherFormProps = {
   editingId?: string | undefined;
   initialData?: any | undefined | null;
+  classes: DataOption[];
+  departments: DataOption[];
+  subjects: DataOption[];
 };
 
-export default function ParentForm({
+export default function TeacherForm({
   editingId,
   initialData,
-}: SingleStudentFormProps) {
-  const relationships = [
-    {
-      label: "Father",
-      value: "Father",
-    },
-    {
-      label: "Mother",
-      value: "Mother",
-    },
-    {
-      label: "Guardian",
-      value: "Guardian",
-    },
-    {
-      label: "Others",
-      value: "Others",
-    },
-  ];
+  classes,
+  departments,
+  subjects,
+}: TeacherFormProps) {
   const titles = [
     {
       label: "Mr",
@@ -91,20 +86,39 @@ export default function ParentForm({
     },
   ];
 
-  const [selectedRelationship, setSelectedRelationship] = useState<any>(
-    relationships[1]
-  );
+  const qualifications = [
+    {
+      label: "Bachelors",
+      value: "Bachelors",
+    },
+    {
+      label: "Diploma",
+      value: "Diploma",
+    },
+    {
+      label: "Certificate",
+      value: "Certificate",
+    },
+  ];
+
   const [selectedMethod, setSelectedMethod] = useState<any>(
     contactMethods[0] || null
   );
   const [selectedGender, setSelectedGender] = useState<any>(genders[0] || null);
+  const [selectedDepartment, setSelectedDepartment] = useState<any>(
+    departments[0]
+  );
+  const [selectedSubjects, setSelectedSubjects] = useState<any>([subjects[0]]);
+  const [selectedClasses, setSelectedClasses] = useState<any>([classes[0]]);
+  const [mainSubject, setMainSubject] = useState<any>(subjects[0]);
+  const [qualification, setQualification] = useState<any>(qualifications[0]);
   const [selectedTitle, setSelectedTitle] = useState<any>(titles[0] || null);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<ParentProps>({
+  } = useForm<TeacherCreateProps>({
     defaultValues: {
       firstName: "",
     },
@@ -115,21 +129,25 @@ export default function ParentForm({
   const initialImage = initialData?.imageUrl || "/images/student.png";
   const [imageUrl, setImageUrl] = useState(initialImage);
 
-  async function saveStudent(data: ParentProps) {
+  async function saveTeacher(data: TeacherCreateProps) {
     try {
       setLoading(true);
       data.imageUrl = imageUrl;
       data.title = selectedTitle.value;
       data.gender = selectedGender.value;
-      data.relationship = selectedRelationship.value;
       data.contactMethod = selectedMethod.value;
+      data.experience = Number(data.experience);
+      data.departmentId = selectedDepartment.value;
+      data.departmentName = selectedDepartment.label;
+      data.qualification = qualification.label;
+      data.mainSubject = mainSubject.label;
+      data.mainSubjectId = mainSubject.value;
+      data.subjects = selectedSubjects.map((item: any) => item.label);
+      data.classes = selectedClasses.map((item: any) => item.label);
+      data.classIds = selectedClasses.map((item: any) => item.value);
+      data.employeeId = generateId();
       console.log(data);
-      if (data.dob) {
-        const parsedDate = new Date(data.dob);
-        if (!isNaN(parsedDate.getTime())) {
-          data.dob = parsedDate.toISOString().split("T")[0];
-        }
-      }
+
       if (editingId) {
         // await updateCategoryById(editingId, data);
         // setLoading(false);
@@ -138,12 +156,11 @@ export default function ParentForm({
         // router.push("/dashboard/categories");
         // setImageUrl("/placeholder.svg");
       } else {
-        const response = await createParent(data);
+        const response = await createTeacher(data);
         setLoading(false);
         toast.success("Successfully Created!");
         reset();
-        // setImageUrl("/placeholder.svg");
-        router.push("/dashboard/users/parents");
+        router.push("/dashboard/users/teachers");
       }
     } catch (error) {
       setLoading(false);
@@ -152,11 +169,11 @@ export default function ParentForm({
   }
 
   return (
-    <form className="" onSubmit={handleSubmit(saveStudent)}>
+    <form className="" onSubmit={handleSubmit(saveTeacher)}>
       <FormHeader
-        href="/parents"
+        href="/teachers"
         parent="users"
-        title="Parent"
+        title="Teacher"
         editingId={editingId}
         loading={loading}
       />
@@ -185,51 +202,6 @@ export default function ParentForm({
               />
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-              <FormSelectInput
-                label="Relationship"
-                options={relationships}
-                option={selectedRelationship}
-                setOption={setSelectedRelationship}
-              />
-              <TextInput
-                register={register}
-                errors={errors}
-                label="National ID / Passport"
-                name="NIN"
-              />
-              <FormSelectInput
-                label="Gender"
-                options={genders}
-                option={selectedGender}
-                setOption={setSelectedGender}
-                isSearchable={false}
-              />
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-              <TextInput
-                register={register}
-                errors={errors}
-                label="Date of Birth"
-                name="dob"
-                type="date"
-              />
-              <TextInput
-                register={register}
-                errors={errors}
-                label="Phone"
-                name="phone"
-                type="phone"
-              />
-              <TextInput
-                label="Nationality"
-                register={register}
-                name="nationality"
-                errors={errors}
-                placeholder="Nigeria"
-              />
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
               <TextInput
                 label="Email"
                 register={register}
@@ -246,29 +218,134 @@ export default function ParentForm({
                 type="phone"
                 placeholder="WhatsApp Number"
               />
+              <TextInput
+                register={register}
+                errors={errors}
+                label="Phone"
+                name="phone"
+                type="phone"
+              />
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+              <FormSelectInput
+                label="Preferred contact Method"
+                options={contactMethods}
+                option={selectedMethod}
+                setOption={setSelectedMethod}
+              />
+              <TextInput
+                label="Nationality"
+                register={register}
+                name="nationality"
+                errors={errors}
+                placeholder="Nigeria"
+              />
+
+              <FormSelectInput
+                label="Gender"
+                options={genders}
+                option={selectedGender}
+                setOption={setSelectedGender}
+                isSearchable={false}
+              />
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+              <TextInput
+                register={register}
+                errors={errors}
+                label="Date of Birth"
+                name="dateOfBirth"
+                type="date"
+              />
+              <TextInput
+                register={register}
+                errors={errors}
+                label="National ID / Passport No"
+                name="NIN"
+              />
               <PasswordInput
                 label="Password"
                 errors={errors}
                 register={register}
                 name="password"
-                toolTipText="Paassword will be used by parent on the student portal"
+                toolTipText="Paassword will be used by teacher on the teachers portal"
               />
             </div>
-            <div className="grid md:grid-cols-2  gap-3">
-              <div className="">
-                <div className="grid gap-3">
-                  <FormSelectInput
-                    label="Preferred contact Method"
-                    options={contactMethods}
-                    option={selectedMethod}
-                    setOption={setSelectedMethod}
-                  />
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+              <TextInput
+                register={register}
+                errors={errors}
+                label="Date of Joining"
+                name="dateOfJoining"
+                type="date"
+              />
+              <TextInput
+                register={register}
+                errors={errors}
+                label="Designation"
+                name="designation"
+                placeholder="Eg. Head Teacher"
+              />
 
+              <FormSelectInput
+                label="Departments"
+                options={departments}
+                option={selectedDepartment}
+                setOption={setSelectedDepartment}
+                isSearchable={false}
+                href="/dashboard/academics/darpartments/new"
+                toolTipText="Create new Dapartment"
+              />
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+              <FormSelectInput
+                label="Qualification"
+                options={qualifications}
+                option={qualification}
+                setOption={setQualification}
+                isSearchable={false}
+              />
+              <MultipleFormSelectInput
+                label="Subjects"
+                options={subjects}
+                option={selectedSubjects}
+                setOption={setSelectedSubjects}
+                isSearchable={false}
+                href="/dashboard/academics/subjects"
+                toolTipText="Add new Subject"
+              />
+              {/* multi select */}
+              <FormSelectInput
+                label="Main Subject"
+                options={subjects}
+                option={mainSubject}
+                setOption={setMainSubject}
+                isSearchable={false}
+                href="/dashboard/academics/subjects"
+                toolTipText="Add new Subject"
+              />
+            </div>
+
+            <div className="grid md:grid-cols-2  gap-3">
+              <div className="space-y-3">
+                {/* multi select */}
+                <MultipleFormSelectInput
+                  label="Classes"
+                  options={classes}
+                  option={selectedClasses}
+                  setOption={setSelectedClasses}
+                  isSearchable={false}
+                  href="/dashboard/academics/classes"
+                  toolTipText="Add new Class"
+                />
+                <div className="grid gap-3">
                   <TextInput
                     register={register}
                     errors={errors}
-                    label="Occupation"
-                    name="occupation"
+                    label="Years Of Experience"
+                    name="experience"
+                    type="number"
+                    placeholder="eg. 5"
                   />
                 </div>
                 <div className="grid gap-3">
@@ -283,10 +360,10 @@ export default function ParentForm({
 
               <div className="grid">
                 <ImageInput
-                  title="Parent Profile Image"
+                  title="Teacher Profile Image"
                   imageUrl={imageUrl}
                   setImageUrl={setImageUrl}
-                  endpoint="parentProfileImage"
+                  endpoint="teacherProfileImage"
                 />
               </div>
             </div>
@@ -294,10 +371,10 @@ export default function ParentForm({
         </div>
       </div>
       <FormFooter
-        href="/parents"
+        href="/teachers"
         editingId={editingId}
         loading={loading}
-        title="Parent"
+        title="Teacher"
         parent="users"
       />
     </form>

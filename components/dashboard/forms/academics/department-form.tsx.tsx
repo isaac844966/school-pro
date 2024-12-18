@@ -14,62 +14,55 @@ import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import TextInput from "@/components/FormInputs/TextInput";
 import SubmitButton from "@/components/FormInputs/SubmitButton";
-import { StreamCreateProps, Stream } from "@/app/types/types";
-import { createStream } from "@/actions/classes";
+import { Department } from "@/app/types/types";
+import { createDepartment } from "@/actions/departments";
 
-export default function StreamForm({
-  classId,
+export default function DepartmentForm({
+  userId,
   initialContent,
   editingId,
-  onStreamCreated,
+  onDepartmentCreated,
 }: {
-  classId: string;
+  userId: string;
   initialContent?: string;
   editingId?: string;
-  onStreamCreated?: (newStream: Stream) => void;
+  onDepartmentCreated?: (newDepartment: Department) => void;
 }) {
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<StreamCreateProps>({
+  } = useForm<Department>({
     defaultValues: {
-      title: initialContent || "",
-      classId: classId,
+      name: initialContent || "",
     },
   });
 
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  async function saveStream(data: StreamCreateProps) {
+  async function saveDepartment(data: Department) {
     try {
       setLoading(true);
       if (editingId) {
-        // const updatedStream = await updateStream(editingId, data);
+        // Handle editing logic here (not implemented in this example)
         setLoading(false);
         toast.success("Updated Successfully!");
-        if (onStreamCreated) {
-          // onStreamCreated(updatedStream);
-        }
       } else {
-        const newStream = await createStream({
-          ...data,
-          classId: classId, // Explicitly pass classId
-        });
+        const newDepartment = await createDepartment(data);
         setLoading(false);
         toast.success("Successfully Created!");
         reset();
         setIsOpen(false);
-        if (onStreamCreated) {
-          onStreamCreated(newStream);
+        if (onDepartmentCreated) {
+          onDepartmentCreated(newDepartment);
         }
       }
     } catch (error) {
       setLoading(false);
       console.error(error);
-      toast.error("Failed to save stream. Please try again.");
+      toast.error("Failed to save department. Please try again.");
     }
   }
 
@@ -77,29 +70,28 @@ export default function StreamForm({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {editingId ? (
-          <Button variant="ghost" size="icon" title="Edit Stream">
+          <Button variant="ghost" size="icon" title="Edit Department">
             <Pencil className="w-4 h-4" />
           </Button>
         ) : (
-          <Button variant="outline" title="Add Section">
-            <FolderPlus className="w-4 h-4 mr-2" />
-            Add Section
+          <Button variant="outline" size="icon" title="Create Department">
+            <FolderPlus className="w-4 h-4" />
           </Button>
         )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {editingId ? "Edit Stream" : "Add New Stream"}
+            {editingId ? "Edit Department" : "Add New Department"}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(saveStream)}>
+        <form onSubmit={handleSubmit(saveDepartment)}>
           <div className="space-y-4">
             <TextInput
               register={register}
               errors={errors}
-              label="Stream Name"
-              name="title"
+              label="Department Name"
+              name="name"
               icon={Check}
             />
             <SubmitButton
