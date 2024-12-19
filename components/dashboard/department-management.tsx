@@ -58,9 +58,7 @@ export default function DepartmentManagement({
     <div className="w-full h-full bg-white p-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold">Departments</h2>
-        <DepartmentForm
-          userId="1233" 
-        />
+        <DepartmentForm userId="1233" />
       </div>
       <div className="mb-4 relative">
         <Input
@@ -244,7 +242,7 @@ export default function DepartmentManagement({
                               <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
                                 <GraduationCap className="w-4 h-4" />
                               </div>
-                              <div>{teacher?.name}</div>
+                              <div>{teacher?.firstName}</div>
                             </div>
                           </div>
                         ))
