@@ -32,9 +32,11 @@ export type DepartmentOptions = {
 export default function SubjectManagement({
   departments,
   subjects: initialSubjects,
+  schoolId,
 }: {
   departments: DepartmentOptions[];
   subjects: Subject[];
+  schoolId: string;
 }) {
   const [subjects, setSubjects] = useState<Subject[]>(initialSubjects);
   const [selectedSubject, setSelectedSubject] = useState<Subject | null>(
@@ -65,6 +67,7 @@ export default function SubjectManagement({
         <SubjectForm
           onSubjectCreated={handleSubjectCreated}
           departments={departments}
+          schoolId={schoolId}
         />
       </div>
       <div className="mb-4 relative">

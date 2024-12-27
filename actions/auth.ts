@@ -1,9 +1,10 @@
 "use server";
-import { SessionData, User } from "@/app/types/types";
+import { SessionData, User, School } from "@/app/types/types";
 import { cookies } from "next/headers";
 
 import { axiosInstance } from ".";
 import axios from "axios";
+import { getSchoolById } from "./schools";
 
 export async function loginUser(data: {
   email: string;
@@ -14,10 +15,12 @@ export async function loginUser(data: {
     console.log(response);
 
     const { user, accessToken, rereshToken } = response.data.data;
-    const userData = response.data.data as SessionData;
+    const userData = response.data.data;
     await createServerSession(userData);
+    const school = await getSchoolById(userData?.user.schoolId);
+    await saveServerSchool(school as School);
 
-    return response.data.data;
+    return response.data.data as SessionData;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message || "Failed to login";
@@ -54,6 +57,21 @@ export async function createServerSession(data: SessionData) {
     return { success: false, error: "Invalid session data" };
   }
 }
+export async function saveServerSchool(data: School) {
+  try {
+    const cookieStore = await cookies();
+    cookieStore.set("school", JSON.stringify(data), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Session creation error:", error);
+    return { success: false, error: "Invalid session data" };
+  }
+}
 
 export async function logout() {
   try {
@@ -75,6 +93,17 @@ export async function getServerUser() {
   try {
     const user = JSON.parse(userCookie.value);
     return user as User;
+  } catch (error) {
+    return null;
+  }
+}
+export async function getServerSchool() {
+  const cookieStore = await cookies();
+  const userCookie = cookieStore.get("school");
+  if (!userCookie) return null;
+  try {
+    const school = JSON.parse(userCookie.value);
+    return school as School;
   } catch (error) {
     return null;
   }

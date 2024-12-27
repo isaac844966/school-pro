@@ -16,17 +16,20 @@ import TextInput from "@/components/FormInputs/TextInput";
 import SubmitButton from "@/components/FormInputs/SubmitButton";
 import { ClassCreateProps, Class } from "@/app/types/types";
 import { createClass } from "@/actions/classes";
+import { useSchoolStore } from "@/store/schools";
 
 export default function ClassForm({
   userId,
   initialContent,
   editingId,
+  schoolId,
   onClassCreated,
 }: {
   userId: string;
   initialContent?: string;
   editingId?: string;
   onClassCreated?: (newClass: Class) => void;
+  schoolId: string;
 }) {
   const {
     register,
@@ -53,6 +56,7 @@ export default function ClassForm({
           // onClassCreated(updatedClass);
         }
       } else {
+        data.schoolId = schoolId;
         const newClass = await createClass(data);
         setLoading(false);
         toast.success("Successfully Created!");

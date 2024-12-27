@@ -16,14 +16,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 import StreamForm from "./forms/academics/stream-form";
-import { Class, Stream, StreamCreateProps, StreamWithCount } from "@/app/types/types";
+import {
+  Class,
+  Stream,
+  StreamCreateProps,
+  StreamWithCount,
+} from "@/app/types/types";
 import ClassForm from "./forms/academics/class-foms";
 import { createStream, getAllClasses } from "@/actions/classes";
 
 export default function ClassManagement({
   classes: initialClasses,
+  schoolId,
 }: {
   classes: Class[];
+  schoolId: string;
 }) {
   const [classes, setClasses] = useState<Class[]>(initialClasses);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -84,7 +91,11 @@ export default function ClassManagement({
     <div className="w-full h-full bg-white p-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold">Classes</h2>
-        <ClassForm userId="user123" onClassCreated={handleClassCreated} />
+        <ClassForm
+          schoolId={schoolId}
+          userId="user123"
+          onClassCreated={handleClassCreated}
+        />
       </div>
       <div className="mb-4 relative">
         <Input
@@ -120,6 +131,7 @@ export default function ClassManagement({
             </div>
             <div className="flex items-center ">
               <ClassForm
+                schoolId={schoolId}
                 userId="user123"
                 initialContent={classItem.title}
                 editingId={classItem.id}
@@ -179,6 +191,7 @@ export default function ClassManagement({
                 <StreamForm
                   classId={selectedClass.id}
                   onStreamCreated={handleStreamCreated}
+                  schoolId={schoolId}
                 />
               </div>
             </div>
@@ -194,6 +207,7 @@ export default function ClassManagement({
                         </h3>
                         <div className="flex ">
                           <StreamForm
+                          schoolId={schoolId}
                             classId={selectedClass.id}
                             initialContent={stream?.title}
                             editingId={stream?.id}

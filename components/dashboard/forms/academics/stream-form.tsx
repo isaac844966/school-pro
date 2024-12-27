@@ -22,11 +22,13 @@ export default function StreamForm({
   initialContent,
   editingId,
   onStreamCreated,
+  schoolId,
 }: {
   classId: string;
   initialContent?: string;
   editingId?: string;
   onStreamCreated?: (newStream: Stream) => void;
+  schoolId: string;
 }) {
   const {
     register,
@@ -54,6 +56,7 @@ export default function StreamForm({
           // onStreamCreated(updatedStream);
         }
       } else {
+        data.schoolId = schoolId;
         const newStream = await createStream({
           ...data,
           classId: classId, // Explicitly pass classId

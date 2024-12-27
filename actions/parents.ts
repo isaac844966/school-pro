@@ -24,9 +24,9 @@ export async function deleteParent(id: string) {
     ok: true,
   };
 }
-export async function getAllParents() {
+export async function getAllParents(schoolId: string) {
   try {
-    const response = await axiosInstance.get("/parents");
+    const response = await axiosInstance.get(`/parents/school/${schoolId}`);
     const parents = response.data;
     console.log(parents);
     return parents as ParentProps[];

@@ -21,17 +21,20 @@ export type SchoolProps = {
 
 export type ClassCreateProps = {
   title: string;
+  schoolId: string;
 };
 
 export type StreamCreateProps = {
   title: string;
   classId: string;
+  schoolId: string;
 };
 
 export type Class = {
   id: string;
   title: string;
   slug: string;
+  schoolId: string;
   streams: StreamWithCount[];
   _count: {
     students: number;
@@ -44,6 +47,7 @@ export type Stream = {
   title: string;
   slug: string;
   classId: string;
+  schoolId: string;
   class: Class;
   createdAt: string;
   updatedAt: string;
@@ -68,6 +72,9 @@ export type ParentProps = {
   dob: string;
   createdAt: string;
   updatedAt: string;
+  schoolId: string;
+  schoolLogo: string;
+  schoolName: string;
 };
 export type TeacherCreateProps = {
   title: string;
@@ -97,6 +104,9 @@ export type TeacherCreateProps = {
   occupation: string;
   password: string;
   dateOfBirth: string;
+  schoolId: string;
+  schoolLogo: string;
+  schoolName: string;
 };
 
 export type StudentProps = {
@@ -127,6 +137,9 @@ export type StudentProps = {
   imageUrl: string;
   createdAt: string;
   updatedAt: string;
+  schoolId: string;
+  schoolName: string;
+  schoolLogo: string;
 };
 
 // export type StreamWithCount = {
@@ -221,6 +234,7 @@ export interface Subject {
   hasTheory: boolean;
   hasPractical: boolean;
   labRequired: boolean;
+  schoolId: string;
 }
 
 export interface CreateSubjectData {
@@ -231,6 +245,7 @@ export interface CreateSubjectData {
   type: string;
   departmentId: string;
   departmentName: string;
+  schoolId: string;
 }
 
 export type Department = {
@@ -246,6 +261,7 @@ export type Department = {
   subjects: Subject[];
   budget?: number;
   budgetYear?: string;
+  schoolId: string;
 };
 export type DepartmentList = {
   id: string;
@@ -270,6 +286,7 @@ export type User = {
   phone?: string | null;
   schoolId?: string | null;
   schoolName?: string | null;
+  schoolLogo?: string | null;
 };
 export interface UserSessionStore {
   user: User | null;
@@ -281,3 +298,21 @@ export interface SessionData {
   accessToken: string;
   refreshToken: string;
 }
+export type School = {
+  id: string;
+  name: string;
+  logo: string | null;
+  slug: string;
+};
+export type UserCreateProps = {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+  schoolId?: string;
+  schoolName?: string;
+  students: number;
+  role: "SUPER_ADMIN" | "ADMIN" | "TEACHER" | "STUDENT" | "PARENT";
+  imageUrl?: string;
+  schoolLogo?: string;
+};

@@ -29,8 +29,10 @@ import DepartmentForm from "./forms/academics/department-form.tsx";
 
 export default function DepartmentManagement({
   departments: initialDepartments,
+  schoolId,
 }: {
   departments: Department[];
+  schoolId: string;
 }) {
   const [departments, setDepartments] =
     useState<Department[]>(initialDepartments);
@@ -58,7 +60,7 @@ export default function DepartmentManagement({
     <div className="w-full h-full bg-white p-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold">Departments</h2>
-        <DepartmentForm userId="1233" />
+        <DepartmentForm userId="1233" schoolId={schoolId} />
       </div>
       <div className="mb-4 relative">
         <Input

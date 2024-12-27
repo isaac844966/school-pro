@@ -4,9 +4,11 @@ import TableHeader from "@/components/dashboard/Tables/TableHeader";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import { columns } from "./columns";
 import { getAllTeachers } from "@/actions/teachers";
+import { getServerUser } from "@/actions/auth";
 
 export default async function page() {
-  const teachers = (await getAllTeachers()) || [];
+  const user = await getServerUser();
+  const teachers = (await getAllTeachers(user?.schoolId ?? "")) || [];
   return (
     <div className="p-8">
       <TableHeader

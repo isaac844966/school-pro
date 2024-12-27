@@ -29,11 +29,13 @@ export default function SubjectForm({
   editingId,
   onSubjectCreated,
   departments,
+  schoolId,
 }: {
   initialContent?: Partial<Subject>;
   editingId?: string;
   onSubjectCreated?: (newSubject: Subject) => void;
   departments: DepartmentOptions[];
+  schoolId: string;
 }) {
   const {
     register,
@@ -77,7 +79,7 @@ export default function SubjectForm({
     data.departmentName = selectedDepartment.label;
     data.category = selectedCategory.value as SubjectCategory;
     data.type = selectedType.value as SubjectType;
-
+    data.schoolId = schoolId;
     try {
       setLoading(true);
       if (editingId) {
@@ -94,7 +96,7 @@ export default function SubjectForm({
           if (onSubjectCreated) {
             onSubjectCreated(newSubject);
           }
-            return newSubject
+          return newSubject;
         } else {
           toast.error("Failed to create subject. Please try again.");
         }

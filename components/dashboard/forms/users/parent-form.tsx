@@ -4,14 +4,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-// import { generateSlug } from "@/lib/generateSlug";
-// import toast from "react-hot-toast";
-// import { Category } from "@prisma/client";
-// import { CategoryProps } from "@/types/types";
-
-// import TextInput from "../FormInputs/TextInput";
-// import TextArea from "../FormInputs/TextAreaInput";
-// import ImageInput from "../FormInputs/ImageInput";
 import TextInput from "@/components/FormInputs/TextInput";
 import TextArea from "@/components/FormInputs/TextAreaInput";
 import ImageInput from "@/components/FormInputs/ImageInput";
@@ -22,21 +14,26 @@ import FormHeader from "../students/FormHeader";
 import FormFooter from "../students/FormFooter";
 import { ParentProps } from "@/app/types/types";
 import { createParent } from "@/actions/parents";
-// import { createCategory, updateCategoryById } from "@/actions/categories";
 
 export type SelectOptionProps = {
   label: string;
   value: string;
 };
-type SingleStudentFormProps = {
+type ParentFormProps = {
   editingId?: string | undefined;
   initialData?: any | undefined | null;
+  schoolId: string;
+  schoolLogo: string;
+  schoolName: string;
 };
 
 export default function ParentForm({
   editingId,
   initialData,
-}: SingleStudentFormProps) {
+  schoolId,
+  schoolLogo,
+  schoolName,
+}: ParentFormProps) {
   const relationships = [
     {
       label: "Father",
@@ -123,6 +120,9 @@ export default function ParentForm({
       data.gender = selectedGender.value;
       data.relationship = selectedRelationship.value;
       data.contactMethod = selectedMethod.value;
+      data.schoolId = schoolId;
+      data.schoolLogo = schoolLogo;
+      data.schoolName = schoolName;
       console.log(data);
       if (data.dob) {
         const parsedDate = new Date(data.dob);

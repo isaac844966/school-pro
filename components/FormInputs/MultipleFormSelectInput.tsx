@@ -1,20 +1,21 @@
 "use client";
 import AddNewButton from "@/components/FormInputs/AddNewButton";
-import { useState } from "react";
-
+import { Dispatch, SetStateAction } from "react";
 import Select from "react-tailwindcss-select";
 import { Option, Options } from "react-tailwindcss-select/dist/components/type";
+
 type MultipleFormSelectInputProps = {
   options: Options;
   label: string;
-  option: Option;
-  setOption: any;
+  option: Option[]; // Changed to only accept Option[]
+  setOption: Dispatch<SetStateAction<Option[]>>; // Fixed to match useState type
   href?: string;
   labelShown?: boolean;
   toolTipText?: string;
   isSearchable?: boolean;
   isMultiple?: boolean;
 };
+
 export default function MultipleFormSelectInput({
   options,
   label,
@@ -24,11 +25,16 @@ export default function MultipleFormSelectInput({
   toolTipText,
   labelShown = true,
   isSearchable = true,
+  isMultiple = true,
 }: MultipleFormSelectInputProps) {
-  // const [results, setResults] = useState([])
-  function handleChange(item: any) {
-    setOption(item)
+  function handleChange(value: Option | Option[] | null) {
+    if (value) {
+      // Handle both single and multiple selections
+      const newValue = Array.isArray(value) ? value : [value];
+      setOption(newValue);
+    }
   }
+
   return (
     <div className="">
       {labelShown && (
@@ -44,7 +50,7 @@ export default function MultipleFormSelectInput({
           onChange={handleChange}
           options={options}
           placeholder={label}
-          isMultiple
+          isMultiple={isMultiple}
         />
         {href && toolTipText && (
           <AddNewButton toolTipText={toolTipText} href={href} />

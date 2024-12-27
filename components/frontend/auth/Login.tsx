@@ -11,7 +11,10 @@ import PasswordInput from "@/components/FormInputs/PasswordInput";
 import { Lock, LogIn, Mail } from "lucide-react";
 import { loginUser } from "@/actions/auth";
 import { useUserSession } from "@/store/auth";
-import { User } from "@/app/types/types";
+import { School, User } from "@/app/types/types";
+import { getSchoolById } from "@/actions/schools";
+import { useSchoolStore } from "@/store/schools";
+import toast from "react-hot-toast";
 
 export type LoginInputProps = {
   email: string;
@@ -27,24 +30,32 @@ export default function Login() {
   } = useForm<LoginInputProps>();
   const { setUser } = useUserSession();
   const router = useRouter();
+  const { setSchool } = useSchoolStore();
 
   async function onSubmit(data: LoginInputProps) {
     try {
       setIsLoading(true);
       console.log(data);
       const sessionData = await loginUser(data);
-      setUser(sessionData?.user as User);
       const role = sessionData?.user.role;
+      const school = await getSchoolById(sessionData?.user.schoolId);
+
+      await setSchool(school as School);
+      setUser(sessionData?.user as User);
+
       if (role === "SUPER_ADMIN") {
         router.push("/school-onboarding");
       } else {
         router.push("/dashboard");
       }
+      toast.success("Logged in Successfully");
       setIsLoading(false);
     } catch (error) {
+      toast.success("Failed to Login");
       setIsLoading(false);
     }
   }
+
   return (
     <div className="w-full lg:grid h-screen lg:min-h-[600px] lg:grid-cols-2 relative ">
       <div className="flex items-center justify-center py-12">

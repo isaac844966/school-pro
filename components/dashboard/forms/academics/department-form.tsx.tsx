@@ -22,11 +22,13 @@ export default function DepartmentForm({
   initialContent,
   editingId,
   onDepartmentCreated,
+  schoolId
 }: {
   userId: string;
   initialContent?: string;
   editingId?: string;
   onDepartmentCreated?: (newDepartment: Department) => void;
+schoolId:string
 }) {
   const {
     register,
@@ -50,6 +52,7 @@ export default function DepartmentForm({
         setLoading(false);
         toast.success("Updated Successfully!");
       } else {
+        data.schoolId = schoolId
         const newDepartment = await createDepartment(data);
         setLoading(false);
         toast.success("Successfully Created!");

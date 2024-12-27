@@ -28,6 +28,9 @@ type SingleStudentFormProps = {
   classes: Class[];
   parents: ParentProps[];
   nextSeq: number;
+  schoolId: string;
+  schoolName: string;
+  schoolLogo: string;
 };
 
 export default function SingleStudentForm({
@@ -36,6 +39,9 @@ export default function SingleStudentForm({
   classes,
   parents,
   nextSeq,
+  schoolId,
+  schoolName,
+  schoolLogo,
 }: SingleStudentFormProps) {
   const classesOptions = classes.map((parent) => {
     return {
@@ -106,7 +112,7 @@ export default function SingleStudentForm({
   } = useForm<StudentProps>({
     defaultValues: {
       firstName: "",
-      nationality:"Nigeria"
+      nationality: "Nigeria",
     },
   });
   const router = useRouter();
@@ -129,6 +135,9 @@ export default function SingleStudentForm({
       data.gender = selectedGender?.value || "";
       data.religion = selectedReligion?.value || "";
       data.fullName = `${data.firstName} ${data.lastName}`;
+      data.schoolId = schoolId;
+      data.schoolName = schoolName;
+      data.schoolLogo = schoolLogo;
       console.log(data);
 
       if (editingId) {
@@ -144,7 +153,7 @@ export default function SingleStudentForm({
         data.rollNo = rollNo;
         const response = await createStudent(data);
         console.log(response);
-        
+
         setLoading(false);
         toast.success("Student Successfully Created!");
         reset();

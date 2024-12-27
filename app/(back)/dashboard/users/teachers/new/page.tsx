@@ -1,3 +1,4 @@
+import { getServerUser } from "@/actions/auth";
 import { getAllClassList } from "@/actions/classes";
 import {
   getAllDepartments,
@@ -8,11 +9,13 @@ import TeacherForm from "@/components/dashboard/forms/users/teacher-form";
 import { Card, CardContent } from "@/components/ui/card";
 
 async function page() {
-  const departmentsDaata = (await getAllDepartmentsLIst()) || [];
-  const classesData = (await getAllClassList()) || [];
-  const subjectsData = (await getAllSubjectsList()) || [];
+  const user = await getServerUser();
+  const departmentsData =
+    (await getAllDepartmentsLIst(user?.schoolId ?? "")) || [];
+  const classesData = (await getAllClassList(user?.schoolId ?? "")) || [];
+  const subjectsData = (await getAllSubjectsList(user?.schoolId ?? "")) || [];
 
-  const departments = departmentsDaata.map((d) => ({
+  const departments = departmentsData.map((d) => ({
     value: d.id,
     label: d.name,
   }));
@@ -35,6 +38,9 @@ async function page() {
             classes={classes}
             departments={departments}
             subjects={subjects}
+            schoolId={user?.schoolId as string}
+            schoolLogo={user?.schoolLogo as string}
+            schoolName={user?.schoolName as string}
           />
         </CardContent>
       </Card>

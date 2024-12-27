@@ -24,20 +24,20 @@ export async function deleteStudent(id: string) {
     ok: true,
   };
 }
-export async function getAllStudents() {
+export async function getAllStudents(schoolId: string) {
   try {
-    const response = await axiosInstance.get("/students");
+    const response = await axiosInstance.get(`/students/school/${schoolId}`);
     const students = response.data;
     return students as StudentProps[];
   } catch (error) {
     console.log(error);
   }
 }
-export async function getStudentNextSequence() {
+export async function getStudentNextSequence(schoolId:string) {
   try {
-    const response = await axiosInstance.get("/students/seq");
+    const response = await axiosInstance.get(`/students/seq/${schoolId}`);
     const nextSeq = response.data;
-    return nextSeq as number
+    return nextSeq as number;
   } catch (error) {
     console.log(error);
   }

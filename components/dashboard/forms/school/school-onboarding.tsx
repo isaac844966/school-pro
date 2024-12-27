@@ -37,9 +37,10 @@ export default function SchoolOnboardingForm() {
     try {
       setLoading(true);
       data.logo = imageUrl;
-      const res = await createSchool(data);
-      console.log(res);
-      toast.success("Succesfully Created!");
+      const { id, name, logo } = await createSchool(data);
+      toast.success(`Succesfully Created! ${name} school`);
+      reset();
+      router.push(`/school-admin/${id}?name=${name}&logo=${logo}`);
       setLoading(false);
     } catch (error) {
       setLoading(false);

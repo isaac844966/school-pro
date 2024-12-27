@@ -40,9 +40,9 @@ export async function deleteSubject(id: string): Promise<{ ok: boolean }> {
   }
 }
 
-export async function getAllSubjects(): Promise<Subject[]> {
+export async function getAllSubjects(schoolId: string): Promise<Subject[]> {
   try {
-    const response = await axiosInstance.get("/subjects");
+    const response = await axiosInstance.get(`/subjects/school/${schoolId}`);
     return response.data as Subject[];
   } catch (error) {
     console.error("Error fetching subjects:", error);
@@ -50,9 +50,11 @@ export async function getAllSubjects(): Promise<Subject[]> {
   }
 }
 
-export async function getAllSubjectsList(): Promise<SubjectList[]> {
+export async function getAllSubjectsList(
+  schoolId: string
+): Promise<SubjectList[]> {
   try {
-    const response = await axiosInstance.get("/subjects/list");
+    const response = await axiosInstance.get(`/subjects/list/${schoolId}`);
     return response.data as SubjectList[];
   } catch (error) {
     console.error("Error fetching subjects list:", error);

@@ -20,17 +20,11 @@ import PasswordInput from "@/components/FormInputs/PasswordInput";
 import FormSelectInput from "@/components/FormInputs/FormSelectInput";
 import FormHeader from "../students/FormHeader";
 import FormFooter from "../students/FormFooter";
-import { ParentProps, TeacherCreateProps } from "@/app/types/types";
-import { createParent } from "@/actions/parents";
+import { TeacherCreateProps } from "@/app/types/types";
 import { createTeacher } from "@/actions/teachers";
 import MultipleFormSelectInput from "@/components/FormInputs/MultipleFormSelectInput";
-import { convertToValidDateFormat, generateId } from "@/lib/utils";
-// import { createCategory, updateCategoryById } from "@/actions/categories";
+import { generateId } from "@/lib/utils";
 
-// export type SelectOptionProps = {
-//   label: string;
-//   value: string;
-// };
 export type DataOption = {
   label: string;
   value: string;
@@ -41,6 +35,9 @@ type TeacherFormProps = {
   classes: DataOption[];
   departments: DataOption[];
   subjects: DataOption[];
+  schoolId: string;
+  schoolLogo: string;
+  schoolName: string;
 };
 
 export default function TeacherForm({
@@ -49,6 +46,9 @@ export default function TeacherForm({
   classes,
   departments,
   subjects,
+  schoolId,
+  schoolLogo,
+  schoolName,
 }: TeacherFormProps) {
   const titles = [
     {
@@ -133,19 +133,22 @@ export default function TeacherForm({
     try {
       setLoading(true);
       data.imageUrl = imageUrl;
-      data.title = selectedTitle.value;
-      data.gender = selectedGender.value;
-      data.contactMethod = selectedMethod.value;
+      data.title = selectedTitle?.value;
+      data.gender = selectedGender?.value;
+      data.contactMethod = selectedMethod?.value;
       data.experience = Number(data.experience);
-      data.departmentId = selectedDepartment.value;
-      data.departmentName = selectedDepartment.label;
-      data.qualification = qualification.label;
-      data.mainSubject = mainSubject.label;
-      data.mainSubjectId = mainSubject.value;
-      data.subjects = selectedSubjects.map((item: any) => item.label);
-      data.classes = selectedClasses.map((item: any) => item.label);
-      data.classIds = selectedClasses.map((item: any) => item.value);
+      data.departmentId = selectedDepartment?.value;
+      data.departmentName = selectedDepartment?.label;
+      data.qualification = qualification?.label;
+      data.mainSubject = mainSubject?.label;
+      data.mainSubjectId = mainSubject?.value;
+      data.subjects = selectedSubjects?.map((item: any) => item?.label);
+      data.classes = selectedClasses?.map((item: any) => item?.label);
+      data.classIds = selectedClasses?.map((item: any) => item?.value);
       data.employeeId = generateId();
+      data.schoolId = schoolId;
+      data.schoolLogo = schoolLogo;
+      data.schoolName = schoolName;
       console.log(data);
 
       if (editingId) {

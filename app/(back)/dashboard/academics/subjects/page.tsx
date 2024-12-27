@@ -1,10 +1,12 @@
+import { getServerUser } from "@/actions/auth";
 import { getAllDepartmentsLIst } from "@/actions/departments";
 import { getAllSubjects } from "@/actions/subjects";
 import SubjectManagement from "@/components/dashboard/subject-management";
 
 export default async function page() {
-  const departments = (await getAllDepartmentsLIst()) || [];
-  const subjects = (await getAllSubjects()) || [];
+  const user = await getServerUser();
+  const departments = (await getAllDepartmentsLIst(user?.schoolId ?? "")) || [];
+  const subjects = (await getAllSubjects(user?.schoolId ?? "")) || [];
   return (
     <div>
       <SubjectManagement
@@ -13,6 +15,7 @@ export default async function page() {
           label: item.name,
           value: item.id,
         }))}
+        schoolId ={user?.schoolId??""}
       />
     </div>
   );

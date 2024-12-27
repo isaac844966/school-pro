@@ -1,3 +1,4 @@
+import { getServerUser } from "@/actions/auth";
 import { getAllClasses } from "@/actions/classes";
 import { getAllParents } from "@/actions/parents";
 import { getStudentNextSequence } from "@/actions/students";
@@ -9,9 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserPlus, Users } from "lucide-react";
 
 async function page() {
-  const classes = (await getAllClasses()) || [];
-  const parents = (await getAllParents()) || [];
-  const nextSequence = (await getStudentNextSequence()) || 0;
+  const user = await getServerUser();
+  const classes = (await getAllClasses(user?.schoolId ?? "")) || [];
+  const parents = (await getAllParents(user?.schoolId ?? "")) || [];
+  const nextSequence =
+    (await getStudentNextSequence(user?.schoolId ?? "")) || 0;
   return (
     <div className="w-full mx-auto p-6 lg:px-20">
       <Tabs defaultValue="single" className="w-full">
@@ -39,6 +42,9 @@ async function page() {
                 type="warning"
               />
               <SingleStudentForm
+                schoolId={user?.schoolId as string}
+                schoolName={user?.schoolName as string}
+                schoolLogo={user?.schoolLogo as string}
                 classes={classes}
                 parents={parents}
                 nextSeq={nextSequence}
