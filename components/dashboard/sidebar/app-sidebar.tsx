@@ -13,14 +13,8 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import {
-  BadgeCheck,
-  Bell,
   BookOpen,
   Bot,
-  CreditCard,
-  Key,
-  Settings2,
-  Sparkles,
   SquareTerminal,
   User as UserIcon,
   ChevronRight,
@@ -51,7 +45,6 @@ export default async function AppSidebar() {
   if (!user) {
     redirect("/login");
   }
-  console.log(user);
   const sidebarLinks: SidebarLink[] = [
     {
       title: "Dashboard",
@@ -89,6 +82,7 @@ export default async function AppSidebar() {
         { title: "Classes and Streams", url: "/dashboard/academics/classes" },
         { title: "Subjects", url: "/dashboard/academics/subjects" },
         { title: "Departments", url: "/dashboard/academics/departments" },
+        { title: "Periods", url: "/dashboard/academics/terms" },
         { title: "Examinations", url: "#" },
         { title: "Assignments", url: "#" },
         { title: "Report Cards", url: "#" },

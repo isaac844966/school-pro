@@ -18,17 +18,13 @@ import { Department } from "@/app/types/types";
 import { createDepartment } from "@/actions/departments";
 
 export default function DepartmentForm({
-  userId,
   initialContent,
   editingId,
-  onDepartmentCreated,
-  schoolId
+  schoolId,
 }: {
-  userId: string;
   initialContent?: string;
   editingId?: string;
-  onDepartmentCreated?: (newDepartment: Department) => void;
-schoolId:string
+  schoolId: string;
 }) {
   const {
     register,
@@ -52,15 +48,12 @@ schoolId:string
         setLoading(false);
         toast.success("Updated Successfully!");
       } else {
-        data.schoolId = schoolId
+        data.schoolId = schoolId;
         const newDepartment = await createDepartment(data);
         setLoading(false);
         toast.success("Successfully Created!");
         reset();
         setIsOpen(false);
-        if (onDepartmentCreated) {
-          onDepartmentCreated(newDepartment);
-        }
       }
     } catch (error) {
       setLoading(false);

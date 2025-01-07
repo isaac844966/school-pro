@@ -279,7 +279,7 @@ export type User = {
   id: string;
   email: string;
   name: string;
-  role: "SUPER_ADMIN" | "ADMIN" | "TEACHER" | "STUDENT" | "PARENT";
+  role: UserRole;
   createdAt: string;
   updatedAt: string;
   image?: string | null;
@@ -312,7 +312,34 @@ export type UserCreateProps = {
   schoolId?: string;
   schoolName?: string;
   students: number;
-  role: "SUPER_ADMIN" | "ADMIN" | "TEACHER" | "STUDENT" | "PARENT";
+  role: UserRole;
   imageUrl?: string;
   schoolLogo?: string;
+};
+export type UserRole =
+  | "SUPER_ADMIN"
+  | "ADMIN"
+  | "TEACHER"
+  | "STUDENT"
+  | "PARENT"
+  | "SECRETARY";
+export type PeriodCreateProps = {
+  year: number;
+  term: number;
+  isActive: boolean;
+  startDate: string;
+  endDate: string;
+  schoolId: string;
+};
+export type Period = {
+  id: string;
+  year: number;
+  term: number;
+  isActive: boolean;
+  startDate: string;
+  endDate: string;
+  schoolId: string;
+};
+export type GroupedPeriods = {
+  [year: string]: Period[];
 };

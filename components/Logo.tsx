@@ -20,13 +20,13 @@ function Logo({
 }) {
   if (variant === "light") {
     return (
-      <Link href="/" className="flex  items-center justify-center space-x-2">
+      <Link href="/" className=" space-x-2">
         <Image
           src={schoolLogo ?? "/images/logo.webp"}
           alt={schoolName ?? "School Base"}
           width={500}
           height={150}
-          className="w-40 h-20 object-fill"
+          className="w-40 h-20 object-contain"
         />
       </Link>
     );

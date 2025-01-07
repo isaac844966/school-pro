@@ -8,8 +8,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 export async function createDepartment(data: Department) {
   try {
     const response = await axiosInstance.post("/departments", data);
-    // revalidateTag("departments");
-    // revalidatePath("/dashboard/academics/departments");
+    revalidatePath("/dashboard/academics/departments");
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

@@ -1,6 +1,11 @@
 "use server";
 
-import { ParentProps, Teacher, UserCreateProps } from "@/app/types/types";
+import {
+  ParentProps,
+  Teacher,
+  UserCreateProps,
+  UserRole,
+} from "@/app/types/types";
 import { axiosInstance } from ".";
 import axios from "axios";
 
@@ -14,5 +19,19 @@ export async function createUser(data: UserCreateProps) {
       throw new Error(message);
     }
     throw error;
+  }
+}
+export async function getProfileId(userId: string, role: UserRole) {
+  try {
+    if (!userId || !role) {
+      return null;
+    }
+
+    const response = await axiosInstance.get(`/users/${userId}?role=${role}`);
+
+    return response.data.id as string;
+  } catch (error) {
+    console.error("Error fetching profile ID:", error);
+    return null;
   }
 }

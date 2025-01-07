@@ -27,13 +27,11 @@ import { createSubject } from "@/actions/subjects";
 export default function SubjectForm({
   initialContent,
   editingId,
-  onSubjectCreated,
   departments,
   schoolId,
 }: {
   initialContent?: Partial<Subject>;
   editingId?: string;
-  onSubjectCreated?: (newSubject: Subject) => void;
   departments: DepartmentOptions[];
   schoolId: string;
 }) {
@@ -93,9 +91,7 @@ export default function SubjectForm({
           toast.success("Successfully Created!");
           reset();
           setIsOpen(false);
-          if (onSubjectCreated) {
-            onSubjectCreated(newSubject);
-          }
+
           return newSubject;
         } else {
           toast.error("Failed to create subject. Please try again.");

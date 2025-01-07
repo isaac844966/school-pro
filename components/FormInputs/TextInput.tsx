@@ -37,6 +37,8 @@ type TextInputProps = {
   unit?: string;
   placeholder?: string;
   icon?: any;
+  min?: number;
+  max?: number;
 };
 
 // TextInput Component
@@ -50,6 +52,8 @@ export default function TextInput({
   unit,
   icon,
   placeholder,
+  min,
+  max,
 }: TextInputProps) {
   const Icon = icon;
   const [formattedValue, setFormattedValue] = useState("");
@@ -99,6 +103,8 @@ export default function TextInput({
             </div>
           )}
           <input
+            min={min}
+            max={max}
             id={name}
             type={type}
             value={formattedValue}

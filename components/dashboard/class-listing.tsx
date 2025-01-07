@@ -23,7 +23,7 @@ import {
   StreamWithCount,
 } from "@/app/types/types";
 import ClassForm from "./forms/academics/class-foms";
-import { createStream, getAllClasses } from "@/actions/classes";
+import { getAllClasses } from "@/actions/classes";
 
 export default function ClassManagement({
   classes: initialClasses,
@@ -38,7 +38,7 @@ export default function ClassManagement({
   const [searchTerm, setSearchTerm] = useState("");
 
   const refreshClasses = useCallback(async () => {
-    const updatedClasses = await getAllClasses();
+    const updatedClasses = await getAllClasses(schoolId);
     setClasses(updatedClasses);
     if (selectedClass) {
       const updatedSelectedClass = updatedClasses.find(
@@ -207,7 +207,7 @@ export default function ClassManagement({
                         </h3>
                         <div className="flex ">
                           <StreamForm
-                          schoolId={schoolId}
+                            schoolId={schoolId}
                             classId={selectedClass.id}
                             initialContent={stream?.title}
                             editingId={stream?.id}

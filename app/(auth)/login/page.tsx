@@ -5,7 +5,10 @@ import { redirect } from "next/navigation";
 async function page() {
   const user = await getServerUser();
   if (user) {
-    redirect("/dashboard");
+    const role = user?.role;
+    const path =
+      role === "ADMIN" || role === "SUPER_ADMIN" ? "/dashboard" : "/portal";
+    redirect(path);
   }
   return (
     <div>

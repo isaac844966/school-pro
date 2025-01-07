@@ -10,6 +10,9 @@ async function DashboardLayout({ children }: { children: ReactNode }) {
   if (!user) {
     redirect("/login");
   }
+  if (user?.role !== "ADMIN") {
+    redirect("/login");
+  }
   return (
     <SidebarProvider>
       <AppSidebar />

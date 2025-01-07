@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-// import CustomCarousel from "../CustomCarousel";
 import TextInput from "@/components/FormInputs/TextInput";
 import SubmitButton from "@/components/FormInputs/SubmitButton";
 import Logo from "@/components/Logo";
@@ -40,13 +39,15 @@ export default function Login() {
       const role = sessionData?.user.role;
       const school = await getSchoolById(sessionData?.user.schoolId);
 
-      await setSchool(school as School);
+      setSchool(school as School);
       setUser(sessionData?.user as User);
 
       if (role === "SUPER_ADMIN") {
         router.push("/school-onboarding");
-      } else {
+      }else if (role === "ADMIN"){
         router.push("/dashboard");
+      } else {
+        router.push("/portal");
       }
       toast.success("Logged in Successfully");
       setIsLoading(false);

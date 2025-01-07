@@ -3,6 +3,7 @@
 import { ParentProps } from "@/app/types/types";
 import { axiosInstance } from ".";
 import axios from "axios";
+import { BriefStudent } from "@/components/portal/StudentList";
 
 export async function createParent(data: ParentProps) {
   try {
@@ -30,6 +31,16 @@ export async function getAllParents(schoolId: string) {
     const parents = response.data;
     console.log(parents);
     return parents as ParentProps[];
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function getStudentByParentId(parentId: string) {
+  try {
+    const response = await axiosInstance.get(`/students/parent/${parentId}`);
+    const students = response.data;
+    console.log(students);
+    return students as BriefStudent[];
   } catch (error) {
     console.log(error);
   }
